@@ -2,26 +2,42 @@
 
 ## 환경 변수 설정 및 적용 방법
 
-1. `.env.template` 파일을 복사해 `.env.dev, .env.prod, .env.staging` 파일을 생성하세요.
+1. **프로필별 환경변수 파일 준비**
+
+   - 개발: `.env.dev`
+   - 운영: `.env.prod`
+   - 스테이징: `.env.staging`
+   - 예시 파일: `.env.template` (필요 항목 참고)
 
    ```sh
-   cp .env.example .env.dev
+   cp .env.template .env.dev
+   # 필요시 .env.prod, .env.staging 등도 복사/생성
    ```
 
-2. `.env` 파일의 `JWT_SECRET_KEY_DEV` 항목에 각자 고유의 비밀키를 입력하세요.
+2. **각 환경변수 파일에 민감 정보(예: JWT_SECRET_KEY_DEV 등) 입력**
 
-3. Spring Boot를 실행하기 전에 환경변수를 적용하세요.
+   - 각자 고유의 비밀키, DB 정보 등 입력
 
-   - 터미널에서:
+3. **Spring Boot 실행 시 자동으로 해당 프로필의 .env 파일이 로드됨**
 
-     ```sh
-     export $(cat .env | xargs)
-     ./gradlew bootRun
-     ```
+   - 현재 스프링 부트 실행시 .env 파일을 바로 적용하기 위해 **dotenv** 라이브러리 사용 중
+   - `spring.profiles.active` 값에 따라 `.env.{profile}` 파일 자동 적용 (main.java 확인)
+   - 예시:
+     - 개발 환경: 기본값(dev) → `.env.dev` 자동 로드
+     - 운영 환경: `SPRING_PROFILES_ACTIVE=prod` 또는 `-Dspring.profiles.active=prod` 지정 시 `.env.prod` 자동 로드
 
-   - 또는 IDE/CI 환경에서는 환경변수 설정 메뉴를 활용하세요.
+   ```sh
+   # 개발 환경(기본)
+   ./gradlew bootRun
 
-4. `.env` 파일은 **절대 git에 커밋하지 마세요**. (이미 .gitignore에 추가되어 있음)
+   # 운영 환경
+   SPRING_PROFILES_ACTIVE=prod ./gradlew bootRun
+   # 또는
+   ./gradlew bootRun -Dspring.profiles.active=prod
+   ```
+
+4. **.env 파일은 절대 git에 커밋하지 마세요**
+   - 이미 .gitignore에 추가되어 있음
 
 ---
 
@@ -100,3 +116,65 @@ npx husky add .husky/pre-commit "npx lint-staged"
 - 커밋 훅은 로컬에서만 동작하므로, 반드시 위 과정을 거쳐야 코드 스타일이 통일됨
 - IDE 포맷터와 spotless가 완전히 동일하지 않을 수 있으니, 커밋 전 spotless가 최종 기준
 - 대형 프로젝트는 커밋 전 spotlessApply가 느릴 수 있음(필요시 lint-staged로 변경된 파일만 적용)
+
+## 로컬 개발 환경: Docker로 DB(MySQL) 실행 및 연동 방법
+
+### 1. MySQL 컨테이너 실행
+
+```sh
+docker-compose up -d
+```
+
+- 위 명령으로 로컬에 MySQL 8.0 컨테이너가 실행됨
+- 데이터는 `./mysql-data` 폴더에 영구 저장됨(컨테이너 삭제해도 데이터 유지)
+
+### 2. DB 계정/환경변수 설정
+
+- `docker-compose.yml`의 DB 계정정보와 `application-dev.yml`(Spring Boot 설정) 내 DB 접속 정보가 반드시 일치해야 함
+  - 예시:
+    - username: `beachsaver_developer`
+    - password: `beachsaver_developer`
+    - database: `beachsaver_dev`
+- JWT 등 민감 정보는 `.env.dev` 등 환경변수 파일에 별도 관리
+
+### 3. Spring Boot 실행 전 환경변수 적용
+
+- 현재 스프링 부트 실행시 .env 파일을 바로 적용하기 위해 **dotenv** 라이브러리 사용 중
+  - `spring.profiles.active` 값에 따라 `.env.{profile}` 파일 자동 적용 (main.java 확인)
+  - 예시:
+    - 개발 환경: 기본값(dev) → `.env.dev` 자동 로드
+    - 운영 환경: `SPRING_PROFILES_ACTIVE=prod` 또는 `-Dspring.profiles.active=prod` 지정 시 `.env.prod` 자동 로드
+
+### 4. 포트/볼륨/환경변수 커스터마이즈
+
+- MySQL 기본 포트(3306) 충돌 시, `docker-compose.yml`의 `ports` 항목 수정
+- 데이터 볼륨 경로(`./mysql-data`)는 필요에 따라 변경 가능
+- 추가 환경변수는 `env_file` 또는 `environment` 항목에 직접 지정
+
+### 5. 주의/팁
+
+- DB 계정정보 불일치 시 Spring Boot에서 DB 접속 오류 발생
+- 컨테이너가 정상 실행 중인지 확인하려면:
+
+  ```sh
+  docker ps
+  ```
+
+- 컨테이너 로그 확인:
+
+  ```sh
+  docker logs beachsaver-mysql-dev
+  ```
+
+- 컨테이너 중지/삭제:
+
+  ```sh
+  docker-compose down
+  ```
+
+### 6. 전체 워크플로우 요약
+
+1. `docker-compose up -d`로 MySQL 컨테이너 실행
+2. `.env.dev` 등 환경변수 파일 준비 및 적용
+3. Spring Boot 실행(`./gradlew bootRun`)
+4. DB/애플리케이션 연동 정상 동작 확인
