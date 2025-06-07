@@ -135,3 +135,6 @@ mysql-data/
 
 # backend 안의 문서 폴더
 docs
+
+# 허스키 사용을 위한 노드 모듈
+node_modules/
