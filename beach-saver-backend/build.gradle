@@ -82,6 +82,12 @@ dependencies {
 	// =========================
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0' // OpenAPI 3 + Swagger UI
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc' // REST Docs 문서화
+
+	// =========================
+	// 스프링 부트가 .env 파일을 자동으로 읽도록 설정
+	// =========================
+	implementation 'io.github.cdimascio:dotenv-java:3.2.0' // 환경변수 관리
+
 }
 
 tasks.named('test') {
