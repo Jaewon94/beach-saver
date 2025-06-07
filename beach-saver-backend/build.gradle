@@ -3,6 +3,8 @@ plugins {
 	id 'org.springframework.boot' version '3.5.0'
 	id 'io.spring.dependency-management' version '1.1.7'
 	id 'org.asciidoctor.jvm.convert' version '3.3.2'
+	id 'com.diffplug.spotless' version '6.25.0'
+	id 'checkstyle'
 }
 
 group = 'com.portpolio'
@@ -120,4 +122,20 @@ sourceSets {
 // → 빌드 클린시 Q타입 소스도 완전히 정리됨(불필요한 파일 잔존 방지)
 clean.doLast {
 	file(querydslDir).deleteDir() // Q타입 소스 디렉토리 삭제
+}
+
+// =========================
+// 코드 스타일/포맷터 설정
+// =========================
+spotless {
+	java {
+		googleJavaFormat('1.17.0') // 구글 자바 포맷 스타일 적용
+		target 'src/**/*.java'
+	}
+}
+
+checkstyle {
+	toolVersion = '10.12.4'
+	// 커스텀 룰 쓰려면 configFile 지정, 기본은 구글 스타일
+	// configFile = file('config/checkstyle/checkstyle.xml')
 }
