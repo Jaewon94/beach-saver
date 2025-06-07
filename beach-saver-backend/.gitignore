@@ -125,3 +125,9 @@ $RECYCLE.BIN/
 .directory
 .Trash-*
 .nfs*
+
+# 환경변수 파일(비밀정보)
+.env
+
+# backend 안의 문서 폴더
+docs

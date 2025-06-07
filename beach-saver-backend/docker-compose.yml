@@ -1,0 +1,35 @@
+# [실행 방법]
+# 1. MySQL 컨테이너 실행:
+#    docker-compose up -d
+#
+# 2. Spring Boot (beach-saver-backend) 실행 전, DB 계정정보(application-dev.yml)와 아래 환경설정이 일치하는지 반드시 확인:
+#    username: beachsaver_developer
+#    password: beachsaver_developer
+#    database: beachsaver_dev
+#
+# 3. JWT 환경변수 설정 (Spring Boot 실행 전):
+#    export JWT_SECRET_KEY_DEV=your_secret_key
+#    ./gradlew bootRun
+#
+# 4. Spring Boot도 Docker로 실행하려면 Dockerfile 및 backend 서비스 추가 필요 (별도 문의)
+#
+# [주의]
+# - DB 계정정보 불일치 시 접속 오류 발생
+# - 데이터는 ./mysql-data 볼륨에 영구 저장됨
+# - 포트 충돌 시 docker-compose.yml의 ports 항목 수정
+version: '3.8'
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: beachsaver-mysql-dev
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: beachsaver_dev # 강력한 비밀번호로 변경 권장
+      MYSQL_DATABASE: beachsaver_dev
+      MYSQL_USER: beachsaver_developer
+      MYSQL_PASSWORD: beachsaver_developer
+      TZ: Asia/Seoul
+    ports:
+      - '3306:3306'
+    volumes:
+      - ./mysql-data:/var/lib/mysql

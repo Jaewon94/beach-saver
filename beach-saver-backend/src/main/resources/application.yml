@@ -1,0 +1,36 @@
+# application.yml
+
+spring:
+  # 기본으로 사용할 프로파일을 'dev' (개발)로 지정합니다.
+  # 이렇게 하면 별도 설정 없이 실행 시 application-dev.yml을 자동으로 읽습니다.
+  profiles:
+    active: dev
+
+  # 모든 환경에 공통으로 적용될 JPA 설정 예시
+  jpa:
+    hibernate:
+      ddl-auto: none # DB 마이그레이션 도구(Flyway/Liquibase) 사용을 권장하므로 none으로 설정
+    properties:
+      hibernate:
+        format_sql: true # SQL 로그를 예쁘게 출력
+        default_batch_fetch_size: 100 # 성능 최적화를 위한 설정
+    open-in-view: false # OSIV(Open Session In View)는 성능 이슈 및 영속성 관리 복잡성으로 인해 끄는 것을 권장
+
+# 서버 포트 설정
+server:
+  port: 8080
+
+# 로깅 설정
+logging:
+  level:
+    root: INFO
+    com.portpolio.beachsaver: DEBUG # 우리 프로젝트 패키지는 DEBUG 레벨로 설정하여 개발 시 상세 로그 확인
+
+# Spring REST Docs 설정
+org:
+  springframework:
+    restdocs:
+      uris:
+        scheme: https
+        host: api.beachsaver.com
+        port: 443
