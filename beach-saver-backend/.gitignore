@@ -128,6 +128,10 @@ $RECYCLE.BIN/
 
 # 환경변수 파일(비밀정보)
 .env
+!.env.template
+
+# 도커 관련 폴더
+mysql-data/
 
 # backend 안의 문서 폴더
 docs
