@@ -4,9 +4,9 @@ spring:
   # 개발용 로컬 DB 정보 (실제 프로젝트의 로컬 DB 설정에 맞게 수정)
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/beachsaver_dev?useSSL=false&serverTimezone=Asia/Seoul
-    username: beachsaver_developer
-    password: beachsaver_developer # 로컬 개발용 비밀번호
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?useSSL=false&serverTimezone=Asia/Seoul
+    username: ${DB_USER}
+    password: ${DB_PASS}
 
   # JPA/Hibernate 설정 (개발 환경에서는 스키마 자동 생성 기능 활용 가능)
   jpa:
@@ -16,4 +16,5 @@ spring:
 
 # JWT 비밀키 등 민감 정보는 환경 변수로 받는 것이 좋습니다.
 jwt:
-  secret: ${JWT_SECRET_KEY_DEV}
+  secret: ${JWT_SECRET_KEY}
+  expires-in: ${JWT_EXPIRES_IN}
