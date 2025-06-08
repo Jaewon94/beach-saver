@@ -4,7 +4,7 @@ spring:
   # 개발용 로컬 DB 정보 (실제 프로젝트의 로컬 DB 설정에 맞게 수정)
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?useSSL=false&serverTimezone=Asia/Seoul
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?useSSL=false&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
     username: ${DB_USER}
     password: ${DB_PASS}
 
