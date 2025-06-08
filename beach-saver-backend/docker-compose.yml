@@ -17,11 +17,10 @@
 # - DB 계정정보 불일치 시 접속 오류 발생
 # - 데이터는 ./mysql-data 볼륨에 영구 저장됨
 # - 포트 충돌 시 docker-compose.yml의 ports 항목 수정
-version: '3.8'
 services:
   mysql:
     image: mysql:8.0
-    container_name: beachsaver-mysql-dev
+    container_name: beachsaver-mysql
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: beachsaver_dev # 강력한 비밀번호로 변경 권장
@@ -33,5 +32,6 @@ services:
       - '3306:3306'
     volumes:
       - ./mysql-data:/var/lib/mysql
+      - ./mysql-init.d:/docker-entrypoint-initdb.d # test용 db 생성
     env_file:
-      - .env.development
+      - .env.dev
