@@ -178,3 +178,15 @@ docker-compose up -d
 2. `.env.dev` 등 환경변수 파일 준비 및 적용
 3. Spring Boot 실행(`./gradlew bootRun`)
 4. DB/애플리케이션 연동 정상 동작 확인
+
+## 코드 테이블 관리 정책
+
+### 1. enum 관리
+
+- **report.type**: 'Investigation', 'Cleaning', 'Collection_Request'만 사용(수거 완료는 별도 보고서 생성 X)
+- **collection_depot.status**: 'WAITING'(수거대기), 'COMPLETED'(수거완료) 등 상태값으로만 관리
+
+### 2. 코드 테이블/체크 동시 반영 필수
+
+- enum 값 추가/변경 시 코드 테이블/체크 동시 반영 필수
+- 수거 완료는 collection_depot.status만 변경, 별도 보고서 생성/분리 X
