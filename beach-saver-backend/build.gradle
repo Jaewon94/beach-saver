@@ -137,5 +137,11 @@ spotless {
 checkstyle {
 	toolVersion = '10.12.4'
 	// 커스텀 룰 쓰려면 configFile 지정, 기본은 구글 스타일
-	// configFile = file('config/checkstyle/checkstyle.xml')
+	configFile = file('config/checkstyle/checkstyle.xml')
+}
+
+// build.gradle 파일 맨 아래에 추가
+// checkstyleMain 작업은 모든 JavaCompile 작업이 끝난 후에 실행되도록 설정
+tasks.named('checkstyleMain') {
+	dependsOn(tasks.withType(JavaCompile))
 }
