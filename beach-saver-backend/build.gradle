@@ -72,6 +72,9 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok' // 롬복 어노테이션 프로세서
 	developmentOnly 'org.springframework.boot:spring-boot-devtools' // 개발용 핫리로드
 
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor' // 사용자 정의 환경변수 처리용
+
+
 	// =========================
 	// 테스트/문서화
 	// =========================
