@@ -22,27 +22,29 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "notification")
-@Getter @NoArgsConstructor @AllArgsConstructor @Builder
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Notification extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id")
+  private User user;
 
-    @Enumerated(EnumType.STRING)
-    @Column(length = 10, nullable = false)
-    private NotificationType type;
+  @Enumerated(EnumType.STRING)
+  @Column(length = 10, nullable = false)
+  private NotificationType type;
 
-    @Column(length = 100)
-    private String title;
+  @Column(length = 100)
+  private String title;
 
-    @Lob
-    private String message;
+  @Lob private String message;
 
-    @Enumerated(EnumType.STRING)
-    @Column(length = 10)
-    private NotificationStatus status;
+  @Enumerated(EnumType.STRING)
+  @Column(length = 10)
+  private NotificationStatus status;
 }

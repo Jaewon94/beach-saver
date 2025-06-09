@@ -18,12 +18,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-/**
- * 청소 보고서 이미지
- * - report(청소 메인 보고서), area(구역별)와 연관
- * - type: ImageType Enum
- * - S3 파일명, 순서, 설명 등 관리
- */
+/** 청소 보고서 이미지 - report(청소 메인 보고서), area(구역별)와 연관 - type: ImageType Enum - S3 파일명, 순서, 설명 등 관리 */
 @Entity
 @Table(name = "report_cleaning_image")
 @Getter
@@ -31,28 +26,28 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class ReportCleaningImage extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "report_id", nullable = false)
-    private Report report;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "report_id", nullable = false)
+  private Report report;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "area_id")
-    private ReportCleaningArea area;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "area_id")
+  private ReportCleaningArea area;
 
-    @Enumerated(EnumType.STRING)
-    @Column(length = 30, nullable = false)
-    private ImageType type;
+  @Enumerated(EnumType.STRING)
+  @Column(length = 30, nullable = false)
+  private ImageType type;
 
-    @Column(name = "file_name", length = 255, nullable = false)
-    private String fileName;
+  @Column(name = "file_name", length = 255, nullable = false)
+  private String fileName;
 
-    @Column(columnDefinition = "integer default 0")
-    private Integer ord;
+  @Column(columnDefinition = "integer default 0")
+  private Integer ord;
 
-    @Column(length = 255)
-    private String description;
-} 
+  @Column(length = 255)
+  private String description;
+}

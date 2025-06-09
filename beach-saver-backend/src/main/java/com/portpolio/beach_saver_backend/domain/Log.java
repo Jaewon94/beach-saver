@@ -18,19 +18,21 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "log")
-@Getter @NoArgsConstructor @AllArgsConstructor @Builder
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Log extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id")
+  private User user;
 
-    @Column(length = 50, nullable = false)
-    private String action;
+  @Column(length = 50, nullable = false)
+  private String action;
 
-    @Lob
-    private String detail;
+  @Lob private String detail;
 }

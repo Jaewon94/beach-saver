@@ -15,24 +15,25 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-/**
- * 조직(시/도/구/군 등)
- */
+/** 조직(시/도/구/군 등) */
 @Entity
 @Table(name = "organization")
-@Getter @NoArgsConstructor @AllArgsConstructor @Builder
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Organization extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Column(length = 100, nullable = false)
-    private String name;
+  @Column(length = 100, nullable = false)
+  private String name;
 
-    @Column(length = 20, nullable = false)
-    private String type;
+  @Column(length = 20, nullable = false)
+  private String type;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_id")
-    private Organization parent;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "parent_id")
+  private Organization parent;
 }

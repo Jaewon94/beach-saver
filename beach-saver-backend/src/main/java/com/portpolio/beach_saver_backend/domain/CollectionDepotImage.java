@@ -19,10 +19,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * 집하장/수거 이미지
- * - collection_depot(집하장/포인트)별로 여러 이미지 첨부 가능
- * - type: ImageType Enum(COLLECTION_DEPOT, COLLECTION_COMPLETED 등)
- * - S3 파일명, 순서, 설명 등 관리
+ * 집하장/수거 이미지 - collection_depot(집하장/포인트)별로 여러 이미지 첨부 가능 - type: ImageType Enum(COLLECTION_DEPOT,
+ * COLLECTION_COMPLETED 등) - S3 파일명, 순서, 설명 등 관리
  */
 @Entity
 @Table(name = "collection_depot_image")
@@ -31,24 +29,24 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class CollectionDepotImage extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "collection_depot_id", nullable = false)
-    private CollectionDepot collectionDepot;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "collection_depot_id", nullable = false)
+  private CollectionDepot collectionDepot;
 
-    @Enumerated(EnumType.STRING)
-    @Column(length = 30, nullable = false)
-    private ImageType type;
+  @Enumerated(EnumType.STRING)
+  @Column(length = 30, nullable = false)
+  private ImageType type;
 
-    @Column(name = "file_name", length = 255, nullable = false)
-    private String fileName;
+  @Column(name = "file_name", length = 255, nullable = false)
+  private String fileName;
 
-    @Column(columnDefinition = "integer default 0")
-    private Integer ord;
+  @Column(columnDefinition = "integer default 0")
+  private Integer ord;
 
-    @Column(length = 255)
-    private String description;
-} 
+  @Column(length = 255)
+  private String description;
+}
