@@ -190,3 +190,33 @@ docker-compose up -d
 
 - enum 값 추가/변경 시 코드 테이블/체크 동시 반영 필수
 - 수거 완료는 collection_depot.status만 변경, 별도 보고서 생성/분리 X
+
+## 데이터 삭제(Soft Delete vs Hard Delete) 정책
+
+### 1. 논리 삭제(Soft Delete)
+
+- **deleted_at 컬럼**을 사용하여 실제 데이터를 삭제하지 않고, 삭제 시각만 기록
+- 복구, 이력 감사, 운영 품질 보장 등 실무적으로 중요한 테이블에만 적용
+- 적용 대상: `user`, `report`, `team`, `collection_depot` 등
+- JPA 엔티티에도 `deletedAt`(LocalDateTime) 필드 필수
+- 실제 삭제는 하지 않으므로, 쿼리/비즈니스 로직에서 `deleted_at IS NULL` 조건 필수
+
+### 2. 하드 딜리트(Hard Delete)
+
+- DB에서 실제로 데이터를 삭제
+- 임시/로그/참조 무관 데이터 등, 복구/감사 필요 없는 테이블에만 적용
+- 예시: `log`, `notification`, `user_admin`, `user_worker`, 각종 이미지 테이블 등
+
+### 3. 정책 적용 기준
+
+- 어떤 테이블에 논리 삭제를 적용할지는 **DB 설계서/아키텍처 문서/README**에 명확히 표기
+- 논리 삭제 대상 테이블은 설계서/DDL/코드에 반드시 `deleted_at` 컬럼 포함
+- 하드 딜리트 대상은 별도 컬럼 없이 실제 삭제
+
+### 4. 실무적 주의
+
+- 논리 삭제된 데이터는 SELECT 시 기본적으로 제외해야 함(예: `WHERE deleted_at IS NULL`)
+- 복구/감사/통계 등 특수 목적 쿼리에서는 논리 삭제 데이터도 조회 가능
+- 논리 삭제 정책은 운영/보안/감사 품질에 직접적 영향, 반드시 일관성 유지
+
+> 정책 위반 시 데이터 유실, 감사 불가, 운영 혼선 등 심각한 문제 발생 가능
