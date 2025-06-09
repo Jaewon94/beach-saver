@@ -94,6 +94,9 @@ CREATE TABLE organization (
   type VARCHAR(20) NOT NULL,             -- 조직유형(Platform/City/District)
   parent_id BIGINT,                      -- 상위 조직 FK(선택)
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP, -- 생성일시
+  updated_at DATETIME,                   -- 수정일시
+  created_by VARCHAR(50),                -- 생성자
+  updated_by VARCHAR(50),                -- 수정자
   FOREIGN KEY (parent_id) REFERENCES organization(id)
 );
 
@@ -111,6 +114,8 @@ CREATE TABLE user (
     CHECK (status IN ('ACTIVE','SUSPENDED','WITHDRAWN')),
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP, -- 생성일시
   updated_at DATETIME,                   -- 수정일시
+  created_by VARCHAR(50),                -- 생성자
+  updated_by VARCHAR(50),                -- 수정자
   FOREIGN KEY (org_id) REFERENCES organization(id)
 );
 
@@ -121,6 +126,9 @@ CREATE TABLE team (
   org_id BIGINT,                         -- 소속 조직 FK
   leader_id BIGINT,                      -- 팀장(사용자) FK
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP, -- 생성일시
+  updated_at DATETIME,                   -- 수정일시
+  created_by VARCHAR(50),                -- 생성자
+  updated_by VARCHAR(50),                -- 수정자
   FOREIGN KEY (org_id) REFERENCES organization(id),
   FOREIGN KEY (leader_id) REFERENCES user(id)
 );
@@ -172,6 +180,9 @@ CREATE TABLE beach (
   latitude DOUBLE NOT NULL,              -- 위도
   longitude DOUBLE NOT NULL,             -- 경도
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP, -- 생성일시
+  updated_at DATETIME,                   -- 수정일시
+  created_by VARCHAR(50),                -- 생성자
+  updated_by VARCHAR(50),                -- 수정자
   UNIQUE(org_id, beach_name),            -- 조직 내 해변명 유니크
   FOREIGN KEY (org_id) REFERENCES organization(id)
 );
@@ -190,6 +201,8 @@ CREATE TABLE report (
   content TEXT,                          -- 상세 내용
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP, -- 생성일시
   updated_at DATETIME,                   -- 수정일시
+  created_by VARCHAR(50),                -- 생성자
+  updated_by VARCHAR(50),                -- 수정자
   FOREIGN KEY (user_id) REFERENCES user(id),
   FOREIGN KEY (team_id) REFERENCES team(id)
 );
@@ -204,6 +217,8 @@ CREATE TABLE report_investigation (
   note VARCHAR(255),                     -- 특이사항/비고
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP, -- 생성일시
   updated_at DATETIME,                   -- 수정일시
+  created_by VARCHAR(50),                -- 생성자
+  updated_by VARCHAR(50),                -- 수정자
   FOREIGN KEY (report_id) REFERENCES report(id),
   FOREIGN KEY (beach_id) REFERENCES beach(id)
 );
@@ -222,6 +237,8 @@ CREATE TABLE report_investigation_area (
   note VARCHAR(255),                     -- 구역 특이사항/비고
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP, -- 생성일시
   updated_at DATETIME,                   -- 수정일시
+  created_by VARCHAR(50),                -- 생성자
+  updated_by VARCHAR(50),                -- 수정자
   FOREIGN KEY (report_id) REFERENCES report(id)
 );
 
@@ -235,6 +252,8 @@ CREATE TABLE report_cleaning (
   note VARCHAR(255),                     -- 특이사항/비고
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP, -- 생성일시
   updated_at DATETIME,                   -- 수정일시
+  created_by VARCHAR(50),                -- 생성자
+  updated_by VARCHAR(50),                -- 수정자
   FOREIGN KEY (report_id) REFERENCES report(id),
   FOREIGN KEY (investigation_report_id) REFERENCES report(id),
   FOREIGN KEY (beach_id) REFERENCES beach(id)
@@ -255,6 +274,8 @@ CREATE TABLE report_cleaning_area (
   note VARCHAR(255),                     -- 구역 특이사항/비고
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP, -- 생성일시
   updated_at DATETIME,                   -- 수정일시
+  created_by VARCHAR(50),                -- 생성자
+  updated_by VARCHAR(50),                -- 수정자
   FOREIGN KEY (report_id) REFERENCES report(id),
   FOREIGN KEY (investigation_area_id) REFERENCES report_investigation_area(id)
 );
@@ -282,6 +303,8 @@ CREATE TABLE collection_depot (
   note VARCHAR(255),                     -- 특이사항/비고(현장 특이사항 등)
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP, -- 생성일시
   updated_at DATETIME,                   -- 수정일시
+  created_by VARCHAR(50),                -- 생성자
+  updated_by VARCHAR(50),                -- 수정자
   FOREIGN KEY (collection_request_report_id) REFERENCES report(id),
   FOREIGN KEY (collector_id) REFERENCES user(id)
 );
@@ -296,6 +319,9 @@ CREATE TABLE collection_depot_image (
   ord INTEGER DEFAULT 0,                 -- 이미지 순서
   description VARCHAR(255),              -- 사진 설명(선택)
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NULL,              -- 수정일시
+  created_by VARCHAR(50),                -- 생성자
+  updated_by VARCHAR(50),                -- 수정자
   FOREIGN KEY (collection_depot_id) REFERENCES collection_depot(id)
 );
 
@@ -310,6 +336,9 @@ CREATE TABLE report_investigation_image (
   ord INTEGER DEFAULT 0,                 -- 이미지 순서
   description VARCHAR(255),              -- 사진 설명(선택)
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NULL,              -- 수정일시
+  created_by VARCHAR(50),                -- 생성자
+  updated_by VARCHAR(50),                -- 수정자
   FOREIGN KEY (report_id) REFERENCES report(id),
   FOREIGN KEY (area_id) REFERENCES report_investigation_area(id)
 );
@@ -325,6 +354,9 @@ CREATE TABLE report_cleaning_image (
   ord INTEGER DEFAULT 0,                 -- 이미지 순서
   description VARCHAR(255),              -- 사진 설명(선택)
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NULL,              -- 수정일시
+  created_by VARCHAR(50),                -- 생성자
+  updated_by VARCHAR(50),                -- 수정자
   FOREIGN KEY (report_id) REFERENCES report(id),
   FOREIGN KEY (area_id) REFERENCES report_cleaning_area(id)
 );
@@ -340,6 +372,9 @@ CREATE TABLE notification (
   status VARCHAR(10) DEFAULT 'UNREAD',
     CHECK (status IN ('UNREAD','READ')),
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NULL,              -- 수정일시
+  created_by VARCHAR(50),                -- 생성자
+  updated_by VARCHAR(50),                -- 수정자
   FOREIGN KEY (user_id) REFERENCES user(id)
 );
 
@@ -350,6 +385,9 @@ CREATE TABLE log (
   action VARCHAR(50) NOT NULL,           -- 이벤트/행동명
   detail TEXT,                           -- 상세 내용
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NULL,              -- 수정일시
+  created_by VARCHAR(50),                -- 생성자
+  updated_by VARCHAR(50),                -- 수정자
   FOREIGN KEY (user_id) REFERENCES user(id)
 );
 
