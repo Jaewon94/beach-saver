@@ -66,7 +66,7 @@ CREATE TABLE user_team (
   left_at DATETIME,                      -- 팀 소속 종료일(탈퇴)
   role_in_team VARCHAR(20),              -- 팀 내 역할(선택)
   status VARCHAR(20) DEFAULT 'ACTIVE',
-    CHECK (status IN ('ACTIVE','LEFT')),
+    CHECK (status IN ('ACTIVE','LEFT')), -- 팀 소속 이력 상태: ACTIVE(소속 중), LEFT(탈퇴)만 허용. user_team_status Enum과 1:1 동기화 필수
   PRIMARY KEY (user_id, team_id, joined_at), -- 한 사용자가 동일 팀에 여러 번 소속될 수 있음 (퇴사 후 다시 소속될 수 있음)
   FOREIGN KEY (user_id) REFERENCES user(id),
   FOREIGN KEY (team_id) REFERENCES team(id)
