@@ -1,26 +1,36 @@
 package com.portpolio.beach_saver_backend.domain;
 
-import jakarta.persistence.*;
-import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import com.portpolio.beach_saver_backend.domain.common.BaseEntity;
 import com.portpolio.beach_saver_backend.domain.enums.CollectionDepotStatus;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "collection_depot")
-@Getter @Setter 
-@NoArgsConstructor 
-@AllArgsConstructor 
-@Builder
+@Getter @NoArgsConstructor @AllArgsConstructor @Builder
 public class CollectionDepot extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "collection_request_report_id")
-    private Report collectionRequestReport;
+    @JoinColumn(name = "report_id")
+    private Report report;
 
     @Column(length = 100)
     private String name;
@@ -48,4 +58,6 @@ public class CollectionDepot extends BaseEntity {
 
     @Column(length = 255)
     private String note;
+
+    private LocalDateTime deletedAt;
 }

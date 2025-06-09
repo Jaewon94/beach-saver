@@ -1,6 +1,7 @@
 package com.portpolio.beach_saver_backend.domain;
 
 
+import java.time.LocalDateTime;
 import com.portpolio.beach_saver_backend.domain.common.BaseEntity;
 import com.portpolio.beach_saver_backend.domain.enums.UserRole;
 import com.portpolio.beach_saver_backend.domain.enums.UserStatus;
@@ -19,17 +20,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * 사용자
  */
 @Entity
 @Table(name = "user")
-@Getter @Setter 
-@NoArgsConstructor 
-@AllArgsConstructor 
-@Builder
+@Getter @NoArgsConstructor @AllArgsConstructor @Builder
 public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,4 +56,15 @@ public class User extends BaseEntity {
     @Column(length = 20)
     @Builder.Default
     private UserStatus status = UserStatus.ACTIVE;
+
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
+
+    public void suspend() {
+        this.status = UserStatus.SUSPENDED;
+    }
+    public void withdraw() {
+        this.status = UserStatus.WITHDRAWN;
+        this.deletedAt = LocalDateTime.now();
+    }
 }

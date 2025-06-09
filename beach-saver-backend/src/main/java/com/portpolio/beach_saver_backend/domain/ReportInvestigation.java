@@ -1,16 +1,24 @@
 package com.portpolio.beach_saver_backend.domain;
 
-import jakarta.persistence.*;
-import lombok.*;
 import java.time.LocalDateTime;
 import com.portpolio.beach_saver_backend.domain.common.BaseEntity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "report_investigation")
-@Getter @Setter 
-@NoArgsConstructor 
-@AllArgsConstructor 
-@Builder
+@Getter @NoArgsConstructor @AllArgsConstructor @Builder
 public class ReportInvestigation extends BaseEntity {
     @Id
     private Long reportId;

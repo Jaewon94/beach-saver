@@ -1,17 +1,30 @@
 package com.portpolio.beach_saver_backend.domain;
 
-import jakarta.persistence.*;
-import lombok.*;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import com.portpolio.beach_saver_backend.domain.common.BaseEntity;
 import com.portpolio.beach_saver_backend.domain.enums.ReportStatus;
 import com.portpolio.beach_saver_backend.domain.enums.ReportType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "report")
-@Getter @Setter 
-@NoArgsConstructor @AllArgsConstructor 
-@Builder
+@Getter @NoArgsConstructor @AllArgsConstructor @Builder
 public class Report extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,4 +54,7 @@ public class Report extends BaseEntity {
 
     @Lob
     private String content;
+
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
 }

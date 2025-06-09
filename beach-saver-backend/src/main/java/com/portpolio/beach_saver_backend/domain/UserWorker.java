@@ -1,15 +1,24 @@
 package com.portpolio.beach_saver_backend.domain;
 
-import jakarta.persistence.*;
-import lombok.*;
 import java.time.LocalDate;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapsId;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * 근로자(조사자/청소자/수거자) 특화 정보
  */
 @Entity
 @Table(name = "user_worker")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Getter @NoArgsConstructor @AllArgsConstructor @Builder
 public class UserWorker {
     @Id
     private Long userId;

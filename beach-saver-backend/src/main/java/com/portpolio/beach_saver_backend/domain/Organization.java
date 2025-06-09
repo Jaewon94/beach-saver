@@ -14,17 +14,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * 조직(시/도/구/군 등)
  */
 @Entity
 @Table(name = "organization")
-@Getter @Setter 
-@NoArgsConstructor 
-@AllArgsConstructor 
-@Builder
+@Getter @NoArgsConstructor @AllArgsConstructor @Builder
 public class Organization extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

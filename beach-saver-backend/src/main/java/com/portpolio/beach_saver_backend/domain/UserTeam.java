@@ -1,16 +1,28 @@
 package com.portpolio.beach_saver_backend.domain;
 
-import jakarta.persistence.*;
-import lombok.*;
 import java.time.LocalDateTime;
-import com.portpolio.beach_saver_backend.domain.enums.UserStatus;
+import com.portpolio.beach_saver_backend.domain.enums.UserTeamStatus;
+import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * 사용자-팀 이력
  */
 @Entity
 @Table(name = "user_team")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Getter @NoArgsConstructor @AllArgsConstructor @Builder
 public class UserTeam {
     @EmbeddedId
     private UserTeamId id;
@@ -34,5 +46,5 @@ public class UserTeam {
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
     @Builder.Default
-    private UserStatus status = UserStatus.ACTIVE;
+    private UserTeamStatus status = UserTeamStatus.ACTIVE;
 }

@@ -1,5 +1,6 @@
 package com.portpolio.beach_saver_backend.domain;
 
+import java.time.LocalDateTime;
 import com.portpolio.beach_saver_backend.domain.common.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,17 +15,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * 팀(실무 단위)
  */
 @Entity
 @Table(name = "team")
-@Getter @Setter 
-@NoArgsConstructor 
-@AllArgsConstructor 
-@Builder
+@Getter @NoArgsConstructor @AllArgsConstructor @Builder
 public class Team extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,4 +37,7 @@ public class Team extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "leader_id")
     private User leader;
+
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
 }
