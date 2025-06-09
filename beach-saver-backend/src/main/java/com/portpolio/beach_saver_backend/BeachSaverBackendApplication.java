@@ -4,9 +4,11 @@ import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @SpringBootApplication
 @ConfigurationPropertiesScan // 이 어노테이션을 추가하여 @ConfigurationProperties 클래스를 찾도록 합니다.
+@EnableJpaAuditing
 public class BeachSaverBackendApplication {
 
   public static void main(String[] args) {
