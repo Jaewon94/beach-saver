@@ -1,87 +1,10 @@
 -- =========================
 -- Beach-Saver 초기 DB 스키마 (Flyway V1)
 -- =========================
-
+--
+-- [중요] ENUM/코드 값 관리는 CHECK 제약조건 방식만 사용. code_* 테이블 및 INSERT는 사용하지 않음.
+-- 설계서와 Enum/코드 값은 항상 동기화 필요. 값 추가/변경 시 ALTER TABLE로 직접 관리.
 -- =========================
--- ENUM/코드 테이블 정의 및 샘플 데이터
--- =========================
-
--- 사용자 역할 코드
-CREATE TABLE code_user_role (
-  code VARCHAR(20) PRIMARY KEY,
-  description VARCHAR(100)
-);
-INSERT INTO code_user_role (code, description) VALUES
-  ('PlatformAdmin', '플랫폼 전체 관리자'),
-  ('CityAdmin', '시/도 관리자'),
-  ('DistrictAdmin', '구/군 관리자'),
-  ('Investigator', '조사자'),
-  ('Cleaner', '청소자'),
-  ('Collector', '수거자'),
-  ('Citizen', '시민 자원봉사자');
-
--- 사용자 상태 코드
-CREATE TABLE code_user_status (
-  code VARCHAR(20) PRIMARY KEY,
-  description VARCHAR(100)
-);
-INSERT INTO code_user_status (code, description) VALUES
-  ('ACTIVE', '활성'),
-  ('SUSPENDED', '정지'),
-  ('WITHDRAWN', '탈퇴');
-
--- 보고서 유형 코드
-CREATE TABLE code_report_type (
-  code VARCHAR(30) PRIMARY KEY,
-  description VARCHAR(100)
-);
-INSERT INTO code_report_type (code, description) VALUES
-  ('Investigation', '조사 보고서'),
-  ('Cleaning', '청소 보고서'),
-  ('Collection_Request', '수거용(요청) 보고서(청소자 작성)');
-
--- 보고서 상태 코드
-CREATE TABLE code_report_status (
-  code VARCHAR(20) PRIMARY KEY,
-  description VARCHAR(100)
-);
-INSERT INTO code_report_status (code, description) VALUES
-  ('DRAFT', '임시'),
-  ('SUBMITTED', '제출'),
-  ('APPROVED', '승인'),
-  ('REJECTED', '반려');
-
--- 이미지 유형 코드
-CREATE TABLE code_image_type (
-  code VARCHAR(30) PRIMARY KEY,
-  description VARCHAR(100)
-);
-INSERT INTO code_image_type (code, description) VALUES
-  ('INVESTIGATION_MAIN', '조사 메인 이미지'),
-  ('INVESTIGATION_AREA', '조사 구역 이미지'),
-  ('CLEANING_BEFORE_AREA', '청소 전 구역 이미지'),
-  ('CLEANING_AFTER_AREA', '청소 후 구역 이미지'),
-  ('COLLECTION_DEPOT', '임시 집하장(수거용) 이미지'),
-  ('COLLECTION_COMPLETED', '수거 완료 이미지');
-
--- 알림 유형 코드
-CREATE TABLE code_notification_type (
-  code VARCHAR(10) PRIMARY KEY,
-  description VARCHAR(100)
-);
-INSERT INTO code_notification_type (code, description) VALUES
-  ('PUSH', '푸시 알림'),
-  ('SMS', '문자'),
-  ('EMAIL', '이메일');
-
--- 알림 상태 코드
-CREATE TABLE code_notification_status (
-  code VARCHAR(10) PRIMARY KEY,
-  description VARCHAR(100)
-);
-INSERT INTO code_notification_status (code, description) VALUES
-  ('UNREAD', '안읽음'),
-  ('READ', '읽음');
 
 -- =========================
 -- 실제 데이터 테이블 정의 (CHECK 제약조건 병행)
@@ -108,7 +31,7 @@ CREATE TABLE user (
   phone VARCHAR(20) UNIQUE,              -- 휴대폰 번호(로그인/식별자, UNIQUE)
   password VARCHAR(255) NOT NULL,        -- 비밀번호(암호화 저장)
   role VARCHAR(20) NOT NULL,
-    CHECK (role IN ('PlatformAdmin','CityAdmin','DistrictAdmin','Investigator','Cleaner','Collector','Citizen')),
+    CHECK (role IN ('PLATFORM_ADMIN','CITY_ADMIN','DISTRICT_ADMIN','INVESTIGATOR','CLEANER','COLLECTOR','CITIZEN')),
   org_id BIGINT,                         -- 소속 조직 FK
   status VARCHAR(20) DEFAULT 'ACTIVE',
     CHECK (status IN ('ACTIVE','SUSPENDED','WITHDRAWN')),
@@ -116,6 +39,7 @@ CREATE TABLE user (
   updated_at DATETIME,                   -- 수정일시
   created_by VARCHAR(50),                -- 생성자
   updated_by VARCHAR(50),                -- 수정자
+  deleted_at DATETIME NULL,
   FOREIGN KEY (org_id) REFERENCES organization(id)
 );
 
@@ -129,6 +53,7 @@ CREATE TABLE team (
   updated_at DATETIME,                   -- 수정일시
   created_by VARCHAR(50),                -- 생성자
   updated_by VARCHAR(50),                -- 수정자
+  deleted_at DATETIME NULL,
   FOREIGN KEY (org_id) REFERENCES organization(id),
   FOREIGN KEY (leader_id) REFERENCES user(id)
 );
@@ -141,7 +66,7 @@ CREATE TABLE user_team (
   left_at DATETIME,                      -- 팀 소속 종료일(탈퇴)
   role_in_team VARCHAR(20),              -- 팀 내 역할(선택)
   status VARCHAR(20) DEFAULT 'ACTIVE',
-    CHECK (status IN ('ACTIVE','SUSPENDED','WITHDRAWN')),
+    CHECK (status IN ('ACTIVE','LEFT')),
   PRIMARY KEY (user_id, team_id, joined_at), -- 한 사용자가 동일 팀에 여러 번 소속될 수 있음 (퇴사 후 다시 소속될 수 있음)
   FOREIGN KEY (user_id) REFERENCES user(id),
   FOREIGN KEY (team_id) REFERENCES team(id)
@@ -177,8 +102,8 @@ CREATE TABLE beach (
   gu_gun VARCHAR(30) NOT NULL,           -- 구/군
   dong_eub VARCHAR(30) NOT NULL,         -- 동/읍
   workplace VARCHAR(30) NOT NULL,        -- 근무처(행정구역 단위)
-  latitude DOUBLE NOT NULL,              -- 위도
-  longitude DOUBLE NOT NULL,             -- 경도
+  latitude DECIMAL(10,7) NOT NULL,       -- 위도
+  longitude DECIMAL(10,7) NOT NULL,      -- 경도
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP, -- 생성일시
   updated_at DATETIME,                   -- 수정일시
   created_by VARCHAR(50),                -- 생성자
@@ -191,7 +116,7 @@ CREATE TABLE beach (
 CREATE TABLE report (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,  -- 보고서 고유 ID
   type VARCHAR(30) NOT NULL,
-    CHECK (type IN ('Investigation','Cleaning','Collection_Request')),
+    CHECK (type IN ('INVESTIGATION','CLEANING','COLLECTION_REQUEST')),
   user_id BIGINT,                        -- 대표 작성자/책임자 FK
   team_id BIGINT,                        -- 소속 팀 FK(선택)
   status VARCHAR(20) DEFAULT 'DRAFT',
@@ -203,6 +128,7 @@ CREATE TABLE report (
   updated_at DATETIME,                   -- 수정일시
   created_by VARCHAR(50),                -- 생성자
   updated_by VARCHAR(50),                -- 수정자
+  deleted_at DATETIME NULL,              -- 논리 삭제
   FOREIGN KEY (user_id) REFERENCES user(id),
   FOREIGN KEY (team_id) REFERENCES team(id)
 );
@@ -290,22 +216,23 @@ CREATE TABLE report_cleaning_area (
 -- - 사진/위치 정보 누락 시 현장 오인/오배송, 완료 이력 미기록 시 감사/통계/운영상 문제 발생
 CREATE TABLE collection_depot (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,  -- 임시 집하장 고유 ID
-  collection_request_report_id BIGINT,   -- 수거용(요청) 보고서 FK
+  report_id BIGINT NOT NULL,             -- 수거용(요청) 보고서 FK (type='COLLECTION_REQUEST'만 참조)
   name VARCHAR(100),                     -- 집하장명(임시, 청소자가 현장에 지정)
   address VARCHAR(255),                  -- 집하장 주소(임시, 네비/현장 확인용)
   latitude DECIMAL(10,7),                -- 위도(정확한 현장 위치 지정)
   longitude DECIMAL(10,7),               -- 경도(정확한 현장 위치 지정)
-  status VARCHAR(20) NOT NULL,           -- 상태(Enum: WAITING/COMPLETED, 상태값만으로 관리)
+  status VARCHAR(20) NOT NULL,
     CHECK (status IN ('WAITING','COMPLETED')),
-  collector_id BIGINT,                   -- 수거자(수거 완료 처리자) FK(누가 완료했는지 명확히)
-  collection_completed_at DATETIME,      -- 수거 완료 시각(감사/통계/운영)
-  collected_amount INTEGER,              -- 수거량(kg 등, 통계/운영)
-  note VARCHAR(255),                     -- 특이사항/비고(현장 특이사항 등)
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP, -- 생성일시
-  updated_at DATETIME,                   -- 수정일시
-  created_by VARCHAR(50),                -- 생성자
-  updated_by VARCHAR(50),                -- 수정자
-  FOREIGN KEY (collection_request_report_id) REFERENCES report(id),
+  collector_id BIGINT,                   -- 수거자(수거 완료 처리자) FK
+  collection_completed_at DATETIME,      -- 수거 완료 시각
+  collected_amount INTEGER,              -- 수거량(kg 등)
+  note VARCHAR(255),                     -- 특이사항/비고
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME,
+  created_by VARCHAR(50),
+  updated_by VARCHAR(50),
+  deleted_at DATETIME NULL,
+  FOREIGN KEY (report_id) REFERENCES report(id),
   FOREIGN KEY (collector_id) REFERENCES user(id)
 );
 
@@ -331,7 +258,7 @@ CREATE TABLE report_investigation_image (
   report_id BIGINT NOT NULL,             -- 조사 메인 보고서 ID
   area_id BIGINT,                        -- 조사 구역별 FK(선택)
   type VARCHAR(30) NOT NULL,
-    CHECK (type IN ('INVESTIGATION_MAIN','INVESTIGATION_AREA','CLEANING_BEFORE_AREA','CLEANING_AFTER_AREA','COLLECTION_DEPOT','COLLECTION_COMPLETED')),
+    CHECK (type IN ('INVESTIGATION_MAIN','INVESTIGATION_AREA')),
   file_name VARCHAR(255) NOT NULL,       -- S3 파일명
   ord INTEGER DEFAULT 0,                 -- 이미지 순서
   description VARCHAR(255),              -- 사진 설명(선택)
@@ -349,7 +276,7 @@ CREATE TABLE report_cleaning_image (
   report_id BIGINT NOT NULL,             -- 청소 메인 보고서 ID
   area_id BIGINT,                        -- 청소 구역별 FK(선택)
   type VARCHAR(30) NOT NULL,
-    CHECK (type IN ('CLEANING_BEFORE_AREA','CLEANING_AFTER_AREA','COLLECTION_DEPOT','COLLECTION_COMPLETED')),
+    CHECK (type IN ('CLEANING_BEFORE_AREA','CLEANING_AFTER_AREA')),
   file_name VARCHAR(255) NOT NULL,       -- S3 파일명
   ord INTEGER DEFAULT 0,                 -- 이미지 순서
   description VARCHAR(255),              -- 사진 설명(선택)
@@ -364,7 +291,7 @@ CREATE TABLE report_cleaning_image (
 -- 알림
 CREATE TABLE notification (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,  -- 알림 고유 ID
-  user_id BIGINT,                        -- 수신자 FK
+  user_id BIGINT NOT NULL,               -- 수신자 FK
   type VARCHAR(10) NOT NULL,
     CHECK (type IN ('PUSH','SMS','EMAIL')),
   title VARCHAR(100),                    -- 제목
