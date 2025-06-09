@@ -134,7 +134,7 @@ CREATE TABLE user_team (
   role_in_team VARCHAR(20),              -- 팀 내 역할(선택)
   status VARCHAR(20) DEFAULT 'ACTIVE',
     CHECK (status IN ('ACTIVE','SUSPENDED','WITHDRAWN')),
-  PRIMARY KEY (user_id, team_id, joined_at), -- 한 사용자가 동일 팀에 여러 번 소속될 수 있음
+  PRIMARY KEY (user_id, team_id, joined_at), -- 한 사용자가 동일 팀에 여러 번 소속될 수 있음 (퇴사 후 다시 소속될 수 있음)
   FOREIGN KEY (user_id) REFERENCES user(id),
   FOREIGN KEY (team_id) REFERENCES team(id)
 );
