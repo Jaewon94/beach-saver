@@ -6,7 +6,7 @@ import lombok.Getter;
 
 /** 이미지 유형 코드 */
 @Getter
-public enum ImageType {
+public enum ImageType implements CodeEnum {
     INVESTIGATION_MAIN("INVESTIGATION_MAIN", "조사 메인 이미지"),
     INVESTIGATION_AREA("INVESTIGATION_AREA", "조사 구역 이미지"),
     CLEANING_BEFORE_AREA("CLEANING_BEFORE_AREA", "청소 전 구역 이미지"),

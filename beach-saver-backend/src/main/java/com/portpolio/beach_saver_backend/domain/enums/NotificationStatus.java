@@ -6,7 +6,7 @@ import lombok.Getter;
 
 /** 알림 상태 코드 */
 @Getter
-public enum NotificationStatus {
+public enum NotificationStatus implements CodeEnum {
     UNREAD("UNREAD", "안읽음"),
     READ("READ", "읽음");
 

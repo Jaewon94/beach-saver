@@ -8,14 +8,14 @@ import lombok.Getter;
  * 사용자 역할 Enum
  */
 @Getter
-public enum UserRole {
-    PlatformAdmin("PlatformAdmin", "플랫폼 전체 관리자"),
-    CityAdmin("CityAdmin", "시/도 관리자"),
-    DistrictAdmin("DistrictAdmin", "구/군 관리자"),
-    Investigator("Investigator", "조사자"),
-    Cleaner("Cleaner", "청소자"),
-    Collector("Collector", "수거자"),
-    Citizen("Citizen", "시민 자원봉사자");
+public enum UserRole implements CodeEnum {
+    PLATFORM_ADMIN("PLATFORM_ADMIN", "플랫폼 전체 관리자"),
+    CITY_ADMIN("CITY_ADMIN", "시/도 관리자"),
+    DISTRICT_ADMIN("DISTRICT_ADMIN", "구/군 관리자"),
+    INVESTIGATOR("INVESTIGATOR", "조사자"),
+    CLEANER("CLEANER", "청소자"),
+    COLLECTOR("COLLECTOR", "수거자"),
+    CITIZEN("CITIZEN", "시민 자원봉사자");
 
     private final String code;
     private final String description;

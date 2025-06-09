@@ -6,7 +6,7 @@ import lombok.Getter;
 
 /** 보고서 상태 코드 */
 @Getter
-public enum ReportStatus {
+public enum ReportStatus implements CodeEnum {
     DRAFT("DRAFT", "임시"),
     SUBMITTED("SUBMITTED", "제출"),
     APPROVED("APPROVED", "승인"),

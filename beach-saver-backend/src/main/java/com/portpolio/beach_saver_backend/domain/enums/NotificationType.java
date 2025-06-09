@@ -6,7 +6,7 @@ import lombok.Getter;
 
 /** 알림 유형 코드 */
 @Getter
-public enum NotificationType {
+public enum NotificationType implements CodeEnum {
     PUSH("PUSH", "푸시 알림"),
     SMS("SMS", "문자"),
     EMAIL("EMAIL", "이메일");

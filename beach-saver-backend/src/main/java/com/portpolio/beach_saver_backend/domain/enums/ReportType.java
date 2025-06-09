@@ -6,10 +6,10 @@ import lombok.Getter;
 
 /** 보고서 유형 코드 */
 @Getter
-public enum ReportType {
-    Investigation("Investigation", "조사 보고서"),
-    Cleaning("Cleaning", "청소 보고서"),
-    Collection_Request("Collection_Request", "수거용(요청) 보고서(청소자 작성)");
+public enum ReportType implements CodeEnum {
+    INVESTIGATION("INVESTIGATION", "조사 보고서"),
+    CLEANING("CLEANING", "청소 보고서"),
+    COLLECTION_REQUEST("COLLECTION_REQUEST", "수거용(요청) 보고서(청소자 작성)");
 
     private final String code;
     private final String description;

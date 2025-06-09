@@ -8,7 +8,7 @@ import lombok.Getter;
  * 사용자 상태 Enum
  */
 @Getter
-public enum UserStatus {
+public enum UserStatus implements CodeEnum {
     ACTIVE("ACTIVE", "활성"),
     SUSPENDED("SUSPENDED", "정지"),
     WITHDRAWN("WITHDRAWN", "탈퇴");

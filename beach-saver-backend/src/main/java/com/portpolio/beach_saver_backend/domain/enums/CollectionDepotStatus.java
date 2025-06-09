@@ -6,7 +6,7 @@ import lombok.Getter;
 
 /** 집하장(임시 집하장) 상태 코드 */
 @Getter
-public enum CollectionDepotStatus {
+public enum CollectionDepotStatus implements CodeEnum {
     WAITING("WAITING", "수거대기"),
     COMPLETED("COMPLETED", "수거완료");
 
